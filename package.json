@@ -4,7 +4,7 @@
   "description": "",
   "main": "pannellum.js",
   "scripts": {
-    "start": "lite-server",
+    "start": "lite-server --baseDir=./ --port ${PORT:-80} --host 0.0.0.0",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
