@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LiveSpace Calle 72</title>
+
+  <!-- Dependencias CSS (sin cambios) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+
+  <style>
+    :root {
+      --azul-navbar: #083c5a;
+      --azul-fondo: #0b4860;
+      --verde: #7acc40;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Commissioner", sans-serif;
+      background: var(--azul-fondo);
+    }
+
+    .navbar {
+      background-color: var(--azul-navbar);
+      padding-left: 70px;
+      padding-right: 70px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      margin: 0 15px;
+      font-weight: 400;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: var(--verde) !important;
+      font-weight: 600;
+    }
+
+    .navbar-brand img {
+      max-height: 50px;
+    }
+
+    .operado {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .proyectos {
+      background: var(--azul-fondo);
+      padding: 48px 70px 80px;
+      position: relative;
+    }
+
+    .proyectos .watermark {
+      position: absolute;
+      inset: auto 0 0 70px;
+      font-weight: 800;
+      line-height: 0.9;
+      font-size: clamp(48px, 8vw, 170px);
+      color: rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+      user-select: none;
+      white-space: normal;
+      max-width: 1200px;
+    }
+
+    .proyectos .row {
+      position: relative;
+      z-index: 2;
+    }
+
+    .apt-header {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* <-- AÑADE ESTA LÍNEA */
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .apt-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0 6px;
+    }
+
+    .nav-arrow {
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      background: transparent;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .pnlm-load-box {
+      display: none !important;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #fff;
+    }
+
+    .plan-wrapper {
+      position: relative;
+      display: inline-block;
+      /* transform: rotate(-18deg); */
+      margin: 8px 0 22px;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    .plan-img {
+      width: 488px;
+      height: auto;
+      display: block;
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #1982ff;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .hotspot:hover {
+      transform: scale(1.1);
+    }
+
+    .custom-hotspot {
+      background-image: url("imagenes/circuloBlanco.png");
+      background-size: cover;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+
+    .custom-hotspot:hover {
+      background-image: url("imagenes/circuloAzul.png");
+      background-size: cover;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+    }
+
+    .specs {
+      color: #fff;
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+      /* <-- AÑADE ESTA LÍNEA */
+    }
+
+    .specs .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .specs .item .val {
+      display: block;
+      font-weight: 400;
+      font-size: 14px;
+      opacity: 0.95;
+      text-align: center;
+    }
+
+    .pano-card {
+      background: #000000;
+      border-radius: 22px;
+      padding: 1px;
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    #panorama {
+      width: 100%;
+      height: min(62vh, 540px);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 991.98px) {
+      .proyectos {
+        padding: 28px 24px 64px;
+      }
+
+      .proyectos .watermark {
+        left: 24px;
+      }
+
+      .plan-img {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .apt-title {
+        font-size: 24px;
+      }
+    }
+
+    .app-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(120% 90% at 30% 20%, #0b4860 0%, #083c5a 45%, #052539 100%);
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+
+    .app-loader.is-ready {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      position: relative;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .25));
+      isolation: isolate;
+    }
+
+    .loader-ring::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--verde) 0%, #21b3ff 45%, var(--verde) 100%);
+      animation: loader-spin 1.2s linear infinite;
+      -webkit-mask: radial-gradient(farthest-side, transparent 52%, #000 54%);
+      mask: radial-gradient(farthest-side, transparent 52%, #000 54%);
+    }
+
+    .loader-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--azul-navbar);
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+    }
+
+    .loader-logo img {
+      width: 68%;
+      height: auto;
+      display: block;
+    }
+
+    @keyframes loader-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader-ring::before {
+        animation: none;
+      }
+    }
+
+    body.is-loading {
+      overflow: hidden;
+    }
+
+    .pnlm-load-box {
+      display: none !important;
+    }
+
+    .app-loader {
+      z-index: 10000;
+    }
+
+    .navbar {
+      position: relative;
+      z-index: 10010;
+    }
+
+    /* ====== Navbar profesional (aplica al HTML dado) ====== */
+    :root {
+      --nav-azul: #083c5a;
+      --nav-verde: #7acc40;
+      --nav-celeste: #21b3ff;
+      --nav-borde: rgba(255, 255, 255, .14);
+      --nav-glass: rgba(8, 60, 90, .85);
+    }
+
+    .navbar {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .00)),
+        var(--nav-glass);
+      border-bottom: 1px solid var(--nav-borde);
+      backdrop-filter: saturate(1.05) blur(6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, .18);
+      padding-block: .5rem;
+    }
+
+    /* Marca */
+    .navbar-brand img {
+      max-height: 50px;
+      transition: transform .2s ease, filter .2s ease;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .25));
+    }
+
+    .navbar-brand:hover img {
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    /* Links */
+    .navbar-nav .nav-link {
+      position: relative;
+      color: #fff !important;
+      font-weight: 500;
+      letter-spacing: .1px;
+      padding: .6rem 1rem;
+      margin: 0 .15rem;
+      border-radius: 10px;
+      transition: background .2s ease, color .2s ease, transform .15s ease;
+    }
+
+    /* subrayado sutil */
+    .navbar-nav .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: .35rem;
+      height: 2px;
+      background: linear-gradient(90deg, var(--nav-verde), var(--nav-celeste));
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform .22s ease;
+      opacity: .9;
+    }
+
+    /* hover limpio */
+    .navbar-nav .nav-link:hover {
+      background: rgba(255, 255, 255, .06);
+      transform: translateY(-1px);
+    }
+
+    .navbar-nav .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* activo con énfasis moderado */
+    .navbar-nav .nav-link.active {
+      background: rgba(255, 255, 255, .10);
+      color: #fff !important;
+    }
+
+    .navbar-nav .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    /* enfoque accesible */
+    .navbar-nav .nav-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(122, 204, 64, .35);
+    }
+
+    /* Bloque derecho */
+    .operado {
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: .2px;
+      opacity: .9;
+    }
+
+    /* Toggler */
+    .navbar-toggler {
+      border: 1px solid rgba(255, 255, 255, .35) !important;
+      border-radius: 10px;
+      padding: .35rem .5rem;
+      transition: background .2s ease, transform .1s ease;
+    }
+
+    .navbar-toggler:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .navbar-toggler:active {
+      transform: scale(.98);
+    }
+
+    .navbar-toggler-icon {
+      /* icono claro siempre visible */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+    }
+
+    /* Menú colapsado en móvil: panel con glass suave */
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background: rgba(255, 255, 255, .04);
+        border-radius: 14px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+        padding: .35rem;
+        margin-top: .6rem;
+      }
+
+      .navbar-nav .nav-link {
+        margin: .1rem 0;
+        border-radius: 12px;
+      }
+    }
+
+    /* Respeto por usuarios que prefieren menos movimiento */
+    @media (prefers-reduced-motion: reduce) {
+
+      .navbar,
+      .navbar * {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="appLoader" class="app-loader" aria-hidden="true">
+    <div class="loader-ring" role="status" aria-label="Cargando">
+      <div class="loader-logo">
+        <img src="imagenes/logo-livespace blanco.png" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- …tu NAVBAR y resto del contenido… -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#"><img src="imagenes/logo-livespace blanco.png"
+          alt="Logo LiveSpace" class="d-inline-block" /></a>
+      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Ubicación</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="zonas.html">Zonas de experiencia</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="apartamentos.html">Apartamentos</a>
+          </li>
+        </ul>
+      </div>
+      <div class="d-flex align-items-center">
+        <span class="operado me-2">Operado por:</span>
+        <img src="imagenes/logo-vivit blanco.png" alt="Logo VIV.IT" height="50" />
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== SECCIÓN PROYECTOS ===== -->
+  <section class="proyectos">
+    <div class="container-fluid px-0">
+      <div class="row g-5 align-items-start">
+        <!-- Columna izquierda -->
+        <div class="col-lg-5 d-flex flex-column align-items-center">
+          <div class="apt-header">
+            <button class="nav-arrow" id="prevBtn" aria-label="Anterior">
+              <i class="bi bi-chevron-double-left"></i>
+            </button>
+            <h2 class="apt-title mb-0" id="aptName">Apt 01</h2>
+            <button class="nav-arrow" id="nextBtn" aria-label="Siguiente">
+              <i class="bi bi-chevron-double-right"></i>
+            </button>
+          </div>
+
+          <!-- === CAMBIO EN EL HTML === -->
+          <div class="plan-wrapper">
+            <img id="planImg" class="plan-img" src="imagenes/plano-01.png" alt="Plano del apartamento" />
+            <!-- Este contenedor se llenará con los hotspots desde JavaScript -->
+            <div id="hotspotsContainer"></div>
+          </div>
+
+          <div class="specs mt-3">
+            <div class="item">
+              <img src="imagenes/area.png" alt="area" width="25" />
+              <div>
+                <strong>Área:</strong><span class="val" id="specArea">25 m²</span>
+              </div>
+            </div>
+            <div class="item">
+              <img src="imagenes/cama-matrimonial.png" alt="cama" width="25" />
+              <div>
+                <strong>Alcobas:</strong><span class="val" id="specBeds">1</span>
+              </div>
+            </div>
+            <div class="item">
+              <img src="imagenes/bano.png" alt="bano" width="25" />
+              <div>
+                <strong>Baños:</strong><span class="val" id="specBaths">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha (visor 360) -->
+        <div class="col-lg-7">
+          <div class="pano-card">
+            <div id="panorama"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="watermark">Apartaestudios nuevos en arriendo</div>
+  </section>
+
+  <!-- Dependencias JS (sin cambios) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+  <script>
+    /* ===== Datos de los apartamentos (igual al tuyo) ===== */
+    const apts = [
+      {
+        name: "Apt 01",
+        area: 25, beds: 1, baths: 1,
+        plan: "imagenes/plano-01.png",
+        pano: "imagenes/Apartamentos/APT01/entrada.jpg",
+        hotspots: [
+          { isEntry: true, showOnMain: true, top: 130, left: 252, panoSrc: "imagenes/Apartamentos/APT01/entrada.jpg", pitch: -25, yaw: 25, links: [{ pitch: -48, yaw: -73, text: "Baño", target: "Apt 01_spot1" }, { pitch: -25, yaw: 25, text: "Habitación Estudio", target: "Apt 01_spot2" }] },
+          { top: 109, left: 323, panoSrc: "imagenes/Apartamentos/APT01/bano.jpg", pitch: -47, yaw: -73, links: [{ pitch: -44, yaw: -112, text: "Acceso", target: "Apt 01_spot0" }] },
+          { top: 203, left: 213, panoSrc: "imagenes/Apartamentos/APT01/cocina.jpg", pitch: -34, yaw: 24, links: [{ pitch: -30, yaw: 0, text: "Habitación", target: "Apt 01_spot3" }, { pitch: -27, yaw: 172, text: "Acceso", target: "Apt 01_spot0" }] },
+          { top: 304, left: 171, panoSrc: "imagenes/Apartamentos/APT01/habitacion.jpg", pitch: -16, yaw: 26, links: [{ pitch: -14, yaw: -175, text: "Acceso", target: "Apt 01_spot0" }, { pitch: -27, yaw: -173, text: "Habitación Estudio", target: "Apt 01_spot2" }] }
+        ]
+      },
+      {
+        name: "Apt 02",
+        area: 28, beds: 1, baths: 1,
+        plan: "imagenes/plano-02.png",
+        pano: "imagenes/Apartamentos/APT02/entrada.jpg",
+        hotspots: [
+          { isEntry: true, showOnMain: true, top: 108, left: 225, panoSrc: "imagenes/Apartamentos/APT02/entrada.jpg", pitch: -24, yaw: -178, links: [{ pitch: -29, yaw: 3.9, text: "Cocina", target: "Apt 02_spot1" }, { pitch: -16, yaw: -2.35, text: "Sala Comedor", target: "Apt 02_spot5" }] },
+          { top: 174, left: 176, panoSrc: "imagenes/Apartamentos/APT02/cocina.jpg", pitch: -35, yaw: -177, links: [{ pitch: -30, yaw: 0.17, text: "Sala Comedor", target: "Apt 02_spot5" }, { pitch: -30, yaw: -92, text: "Habitación", target: "Apt 02_spot4" }, { pitch: -15, yaw: -176, text: "Acceso", target: "Apt 02_spot0" }] },
+          { top: 189, left: 310, panoSrc: "imagenes/Apartamentos/APT02/ropas.jpg", pitch: -14, yaw: -102, links: [{ pitch: -44, yaw: -89, text: "Baño", target: "Apt 02_spot3" }, { pitch: -47, yaw: 89, text: "Habitación", target: "Apt 02_spot4" }] },
+          { top: 91, left: 367, panoSrc: "imagenes/Apartamentos/APT02/bano.jpg", pitch: -1, yaw: -114, links: [{ pitch: -70, yaw: 84, text: "Vestier", target: "Apt 02_spot2" }] },
+          { top: 237, left: 276, panoSrc: "imagenes/Apartamentos/APT02/habitacion.jpg", pitch: -28, yaw: -91, links: [{ pitch: -45, yaw: -85, text: "Vestier", target: "Apt 02_spot2" }, { pitch: -21, yaw: -86, text: "Baño", target: "Apt 02_spot3" }, { pitch: -26, yaw: 178, text: "Cocina", target: "Apt 02_spot1" }] },
+          { top: 228, left: 122, panoSrc: "imagenes/Apartamentos/APT02/sala.jpg", pitch: -30, yaw: 3, links: [{ pitch: -29, yaw: -177, text: "Cocina", target: "Apt 02_spot1" }, { pitch: -15, yaw: -176, text: "Acceso", target: "Apt 02_spot0" }] }
+        ]
+      },
+      {
+        name: "Apt 03",
+        area: 30, beds: 2, baths: 1,
+        plan: "imagenes/plano-03.png",
+        pano: "imagenes/Apartamentos/APT03/entrada.jpg",
+        hotspots: [
+          { isEntry: true, showOnMain: true, top: 108, left: 226, panoSrc: "imagenes/Apartamentos/APT03/entrada.jpg", pitch: -20, yaw: 80, links: [{ pitch: -40, yaw: 90, text: "Cocina", target: "Apt 03_spot3" }, { pitch: -20, yaw: 90, text: "Sala Comedor", target: "Apt 03_spot4" }] },
+          { top: 124, left: 342, panoSrc: "imagenes/Apartamentos/APT03/bano.jpg", pitch: 0.68, yaw: 7.8, links: [{ pitch: -26, yaw: -175, text: "Habitación", target: "Apt 03_spot2" }] },
+          { top: 235, left: 287, panoSrc: "imagenes/Apartamentos/APT03/habitacion.jpg", pitch: -12, yaw: 52, links: [{ pitch: -19, yaw: 61, text: "Baño", target: "Apt 03_spot1" }, { pitch: -25, yaw: -0.7, text: "Cocina", target: "Apt 03_spot3" }] },
+          { top: 170, left: 191, panoSrc: "imagenes/Apartamentos/APT03/cocina.jpg", pitch: -36, yaw: 64, links: [{ pitch: -20, yaw: 12, text: "Acceso", target: "Apt 03_spot0" }, { pitch: -22, yaw: 104, text: "Habitación", target: "Apt 03_spot2" }, { pitch: -26, yaw: -173, text: "Sala Comedor", target: "Apt 03_spot4" }] },
+          { top: 236, left: 166, panoSrc: "imagenes/Apartamentos/APT03/sala.jpg", pitch: -17, yaw: 94, links: [{ pitch: -32, yaw: -83, text: "Cocina", target: "Apt 03_spot3" }, { pitch: -17, yaw: -82, text: "Acceso", target: "Apt 03_spot0" }] }
+        ]
+      },
+      {
+        name: "Apt 04",
+        area: 30, beds: 2, baths: 1,
+        plan: "imagenes/plano-04.png",
+        pano: "imagenes/Apartamentos/APT04/entrada.jpg",
+        hotspots: [
+          { isEntry: true, showOnMain: true, top: 116, left: 254, panoSrc: "imagenes/Apartamentos/APT04/entrada.jpg", pitch: -29, yaw: -125, links: [{ pitch: -30, yaw: -175, text: "Sala Comedor", target: "Apt 04_spot7" }, { pitch: -15, yaw: -170, text: "Balcón", target: "Apt 04_spot7" }] },
+          { top: 63, left: 173, panoSrc: "imagenes/Apartamentos/APT04/banoprincipal.jpg", pitch: -22, yaw: 64, links: [{ pitch: -31, yaw: 0, text: "Vestier", target: "Apt 04_spot4" }] },
+          { top: 189, left: 356, panoSrc: "imagenes/Apartamentos/APT04/balconsala.jpg", pitch: -0.76, yaw: -121, links: [{ pitch: -50, yaw: -75, text: "Sala Comedor", target: "Apt 04_spot7" }] },
+          { top: 259, left: 176, panoSrc: "imagenes/Apartamentos/APT04/bano.jpg", pitch: -0.76, yaw: -121, links: [{ pitch: -50, yaw: 110, text: "Habitación", target: "Apt 04_spot8" }] },
+          { top: 103, left: 145, panoSrc: "imagenes/Apartamentos/APT04/vestier.jpg", pitch: -11, yaw: 121, links: [{ pitch: -39, yaw: -144, text: "Baño Principal", target: "Apt 04_spot1" }, { pitch: -26, yaw: 16, text: "Habitación Principal", target: "Apt 04_spot5" }] },
+          { top: 193, left: 128, panoSrc: "imagenes/Apartamentos/APT04/habitacionprincipal.jpg", pitch: -11, yaw: 121, links: [{ pitch: -29, yaw: -124, text: "Vestier", target: "Apt 04_spot4" }, { pitch: -26, yaw: -36, text: "Hall", target: "Apt 04_spot6" }] },
+          { top: 200, left: 228, panoSrc: "imagenes/Apartamentos/APT04/hall.jpg", pitch: -11, yaw: 121, links: [{ pitch: -39, yaw: -174, text: "Habitación", target: "Apt 04_spot8" }, { pitch: -26, yaw: -16, text: "Habitación Principal", target: "Apt 04_spot5" }, { pitch: -146, yaw: -90, text: "Sala Comedor", target: "Apt 04_spot7" }] },
+          { top: 140, left: 338, panoSrc: "imagenes/Apartamentos/APT04/salacomedor.jpg", pitch: -11, yaw: 121, links: [{ pitch: -30, yaw: -84, text: "Hall", target: "Apt 04_spot6" }, { pitch: -15, yaw: -170, text: "Balcón", target: "Apt 04_spot2" }, { pitch: -26, yaw: 16, text: "Cocina", target: "Apt 04_spot0" }] },
+          { top: 260, left: 258, panoSrc: "imagenes/Apartamentos/APT04/habitacionvisitante.jpg", pitch: -11, yaw: 121, links: [{ pitch: -26, yaw: -45, text: "Baño", target: "Apt 04_spot3" }, { pitch: -26, yaw: 36, text: "Hall", target: "Apt 04_spot6" }] },
+        ]
+      }
+    ];
+    const ORIGINAL_PLAN_WIDTH = 488;
+    let current = 0;
+    let viewer = null;
+    let viewerReady = false;           // <--- NUEVO: flag para evitar carrera
+
+    // UI refs
+    const nameEl = document.getElementById("aptName");
+    const areaEl = document.getElementById("specArea");
+    const bedsEl = document.getElementById("specBeds");
+    const bathsEl = document.getElementById("specBaths");
+    const planImg = document.getElementById("planImg");
+    const hotspotsContainer = document.getElementById("hotspotsContainer");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const appLoader = document.getElementById("appLoader");
+
+    function waitImageLoaded(img) {
+      return img && img.complete
+        ? Promise.resolve()
+        : new Promise(res => img.addEventListener('load', res, { once: true }));
+    }
+
+    // ==== NUEVO: helpers para entrada por apartamento ====
+    const ENTRY_SCENE_BY_APT = {}; // "Apt 01" -> "Apt 01_spotX"
+
+    function getEntryIndex(ap) {
+      if (!ap?.hotspots?.length) return 0;
+      let idx = ap.hotspots.findIndex(h => h && h.isEntry === true);
+      if (idx >= 0) return idx;
+      idx = ap.hotspots.findIndex(h => h && h.showOnMain === true);
+      if (idx >= 0) return idx;
+      return 0; // fallback
+    }
+
+    function computeEntrySceneMap() {
+      for (const ap of apts) {
+        const idx = getEntryIndex(ap);
+        ENTRY_SCENE_BY_APT[ap.name] = `${ap.name}_spot${idx}`;
+      }
+    }
+
+    function normalizeTarget(target, currentApName) {
+      if (!target) return null;
+      // Si ya apunta a una escena concreta, la dejamos
+      if (/_spot\d+$/i.test(target)) return target;
+      // Si apunta a un apto por nombre (antes era la raíz), redirige a su entrada
+      if (ENTRY_SCENE_BY_APT[target]) return ENTRY_SCENE_BY_APT[target];
+      // Si es el mismo apto por nombre, también a su entrada
+      if (target === currentApName) return ENTRY_SCENE_BY_APT[currentApName];
+      return target; // dejar tal cual
+    }
+
+
+    /* ===== Caché de recursos (originalURL -> blobURL) ===== */
+    const RESOURCE_CACHE = new Map(); // url -> { blobUrl }
+    function uniqueUrls() {
+      const set = new Set();
+      for (const ap of apts) {
+        if (ap.plan) set.add(ap.plan);
+        if (ap.pano) set.add(ap.pano);
+        for (const spot of ap.hotspots || []) {
+          if (spot?.panoSrc) set.add(spot.panoSrc);
+        }
+      }
+      return Array.from(set);
+    }
+
+    async function preloadAndDecode(url) {
+      if (RESOURCE_CACHE.has(url)) return RESOURCE_CACHE.get(url).blobUrl;
+      const res = await fetch(url, { cache: "force-cache" });
+      if (!res.ok) throw new Error(`No se pudo precargar: ${url}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      try {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = objectUrl;
+        await img.decode(); // fuerza decodificación en memoria
+      } catch (_) { /* ignore */ }
+
+      RESOURCE_CACHE.set(url, { blobUrl: objectUrl });
+      return objectUrl;
+    }
+
+    async function preloadAllResources() {
+      const urls = uniqueUrls();
+      await Promise.all(urls.map(preloadAndDecode));
+    }
+
+    function blob(url) {
+      return RESOURCE_CACHE.get(url)?.blobUrl || url;
+    }
+
+    /* ===== Construir TODAS las escenas y crear un solo viewer ===== */
+    function buildAllScenes() {
+      computeEntrySceneMap(); // primero calculamos la escena de entrada de cada apto
+      const scenes = {};
+
+      for (const ap of apts) {
+        (ap.hotspots || []).forEach((spot, i) => {
+          const sceneId = `${ap.name}_spot${i}`;
+          scenes[sceneId] = {
+            type: "equirectangular",
+            panorama: blob(spot.panoSrc),
+            // Solo usamos los links definidos en el hotspot (no agregamos "Explorar desde aquí")
+            hotSpots: (spot.links || []).map(link => ({
+              pitch: link.pitch,
+              yaw: link.yaw,
+              type: "scene",
+              text: link.text,
+              sceneId: normalizeTarget(link.target, ap.name),
+              cssClass: "custom-hotspot"
+            })),
+            // (opcional) puedes definir hfov/yaw/pitch por escena aquí si alguna requiere otro encuadre
+            // hfov: HFOV_DEFAULT,
+          };
+        });
+      }
+      return scenes;
+    }
+
+    function createSingleViewer(allScenes) {
+      if (viewer) return viewer;
+      const firstSceneId = ENTRY_SCENE_BY_APT[apts[0].name]; // <--- ENTRADA
+      viewer = pannellum.viewer("panorama", {
+        default: {
+          firstScene: firstSceneId,
+          sceneFadeDuration: 500,
+          autoLoad: true,
+          hfov: 125,
+          minHfov: 65,
+          maxHfov: 125,
+          autoRotate: -12
+        },
+        scenes: allScenes
+      });
+
+      viewer.on('load', () => { viewerReady = true; });
+      return viewer;
+    }
+
+    /* ===== Hotspots del plano ===== */
+    function renderPlanHotspots() {
+      const ap = apts[current];
+      hotspotsContainer.innerHTML = "";
+
+      const currentPlanWidth = planImg.offsetWidth;
+      const scaleFactor = currentPlanWidth / ORIGINAL_PLAN_WIDTH;
+      if (!ap.hotspots || currentPlanWidth === 0) return;
+
+      ap.hotspots.forEach((spot, index) => {
+        const el = document.createElement("span");
+        el.className = "hotspot";
+        el.textContent = "360";
+
+        el.style.top = (spot.top * scaleFactor) + "px";
+        el.style.left = (spot.left * scaleFactor) + "px";
+
+        const size = 28 * Math.max(scaleFactor, 0.8);
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.style.fontSize = (12 * Math.max(scaleFactor, 0.85)) + "px";
+
+        el.addEventListener("click", () => {
+          viewer.loadScene(`${ap.name}_spot${index}`, null, null, 150, 300);
+        });
+
+        hotspotsContainer.appendChild(el);
+      });
+    }
+
+    /* ===== Actualizar UI del apartamento (sin forzar escena si no está ready) ===== */
+    function updateApartment(index, { skipSceneLoad = false } = {}) {
+      current = index;
+      const ap = apts[current];
+
+      nameEl.textContent = ap.name;
+      areaEl.textContent = ap.area + " m²";
+      bedsEl.textContent = ap.beds;
+      bathsEl.textContent = ap.baths;
+
+      // plano desde blob ya cargado
+      const planBlob = blob(ap.plan);
+      if (planBlob && planImg.src !== planBlob) {
+        planImg.src = planBlob;
+      }
+
+      // Si el viewer ya está listo y no nos pidieron saltar el cambio de escena
+      if (viewerReady && !skipSceneLoad) {
+        viewer.loadScene(ENTRY_SCENE_BY_APT[ap.name], null, null, 150, 300);
+      }
+
+      // Render hotspots al cargar/estar listo el plano
+      if (!planImg.complete) {
+        planImg.onload = () => renderPlanHotspots();
+      } else {
+        renderPlanHotspots();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      document.body.classList.add('is-loading');
+
+      await preloadAllResources();
+
+      const scenes = buildAllScenes();
+      createSingleViewer(scenes);
+
+      const firstViewerLoad = new Promise(res => {
+        const onLoad = () => {
+          viewerReady = true;
+          viewer.off && viewer.off('load', onLoad);
+          res();
+        };
+        viewer.on && viewer.on('load', onLoad);
+      });
+
+      prevBtn.addEventListener("click", () => {
+        const newIndex = (current - 1 + apts.length) % apts.length;
+        updateApartment(newIndex);
+      });
+      nextBtn.addEventListener("click", () => {
+        const newIndex = (current + 1) % apts.length;
+        updateApartment(newIndex);
+      });
+      window.addEventListener("resize", renderPlanHotspots);
+
+      updateApartment(current, { skipSceneLoad: true });
+
+      const firstPlanLoad = waitImageLoaded(planImg);
+
+      await Promise.all([firstViewerLoad, firstPlanLoad]);
+      appLoader.classList.add('is-ready');
+      document.body.classList.remove('is-loading');
+
+      window.addEventListener("beforeunload", () => {
+        for (const v of RESOURCE_CACHE.values()) {
+          if (v?.blobUrl) URL.revokeObjectURL(v.blobUrl);
+        }
+      });
+    });
+
+  </script>
+</body>
+
+</html>

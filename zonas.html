@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LiveSpace Calle 72</title>
+
+  <!-- Dependencias CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+
+  <style>
+    :root {
+      --azul-navbar: #083c5a;
+      --azul-fondo: #0b4860;
+      --verde: #7acc40;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Commissioner", sans-serif;
+      background: var(--azul-fondo);
+    }
+
+    .navbar {
+      background-color: var(--azul-navbar);
+      padding-left: 70px;
+      padding-right: 70px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      /* ↑ para que quede sobre el loader */
+      position: relative;
+      z-index: 10010;
+    }
+
+    .navbar-nav .nav-link {
+      color: #fff !important;
+      margin: 0 15px;
+      font-weight: 400;
+    }
+
+    .navbar-nav .nav-link.active {
+      color: var(--verde) !important;
+      font-weight: 600;
+    }
+
+    .navbar-brand img {
+      max-height: 50px;
+    }
+
+    .operado {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .proyectos {
+      background: var(--azul-fondo);
+      padding: 48px 70px 80px;
+      position: relative;
+    }
+
+    .proyectos .watermark {
+      position: absolute;
+      inset: auto 0 0 70px;
+      font-weight: 800;
+      line-height: 0.9;
+      font-size: clamp(48px, 8vw, 170px);
+      color: rgba(255, 255, 255, 0.06);
+      pointer-events: none;
+      user-select: none;
+      white-space: normal;
+      max-width: 1200px;
+    }
+
+    .proyectos .row {
+      position: relative;
+      z-index: 2;
+    }
+
+    .apt-header {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .apt-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin: 0 6px;
+    }
+
+    .nav-arrow {
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      background: transparent;
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #fff;
+    }
+
+    .plan-wrapper {
+      position: relative;
+      display: inline-block;
+      margin: 8px 0 22px;
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    .plan-img {
+      width: 600px;
+      height: auto;
+      display: block;
+    }
+
+    .hotspot {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: #1982ff;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .hotspot:hover {
+      transform: scale(1.1);
+    }
+
+    .specs {
+      color: #fff;
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .specs .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .specs .item .val {
+      display: block;
+      font-weight: 400;
+      font-size: 14px;
+      opacity: 0.95;
+      text-align: center;
+    }
+
+    .pano-card {
+      background: #000000;
+      border-radius: 22px;
+      padding: 1px;
+      box-shadow: 0 22px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    #panorama {
+      width: 100%;
+      height: min(62vh, 540px);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    /* ===== Zonas (si las usas en esta página) ===== */
+    .experience-zones-wrapper {
+      display: none;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 300px;
+      align-items: center;
+    }
+
+    .experience-zone-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .experience-zone-item:hover {
+      transform: translateX(5px);
+    }
+
+    .experience-zone-item img {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .experience-zone-item .name {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 991.98px) {
+      .proyectos {
+        padding: 28px 24px 64px;
+      }
+
+      .proyectos .watermark {
+        left: 24px;
+      }
+
+      .plan-img {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .apt-title {
+        font-size: 24px;
+      }
+    }
+
+    /* --- Blur suave durante cambio de escena --- */
+    #panorama {
+      position: relative;
+    }
+
+    #panorama::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 220ms ease;
+      backdrop-filter: blur(6px) saturate(1.05);
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    #panorama.is-blur::after {
+      opacity: 1;
+    }
+
+    #panorama .pnlm-render-container {
+      transition: filter 220ms ease;
+    }
+
+    #panorama.is-blur .pnlm-render-container {
+      filter: blur(4px);
+    }
+
+    .pnlm-load-box {
+      display: none !important;
+    }
+
+    /* ===== Loader GLOBAL de pantalla completa (solo carga inicial) ===== */
+    .app-loader {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(120% 90% at 30% 20%, #0b4860 0%, #083c5a 45%, #052539 100%);
+      z-index: 10000;
+      /* menor que navbar (10010) para dejarlo arriba */
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+
+    .app-loader.is-hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      position: relative;
+      display: grid;
+      place-items: center;
+      filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .25));
+      isolation: isolate;
+    }
+
+    .loader-ring::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg,
+          var(--verde) 0%,
+          #21b3ff 45%,
+          var(--verde) 100%);
+      animation: loader-spin 1.2s linear infinite;
+      -webkit-mask: radial-gradient(farthest-side, transparent 52%, #000 54%);
+      mask: radial-gradient(farthest-side, transparent 52%, #000 54%);
+    }
+
+    .loader-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--azul-navbar);
+      display: grid;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .12);
+    }
+
+    .loader-logo img {
+      width: 68%;
+      height: auto;
+      display: block;
+    }
+
+    @keyframes loader-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .loader-ring::before {
+        animation: none;
+      }
+    }
+
+    /* ====== Navbar profesional (aplica al HTML dado) ====== */
+    :root {
+      --nav-azul: #083c5a;
+      --nav-verde: #7acc40;
+      --nav-celeste: #21b3ff;
+      --nav-borde: rgba(255, 255, 255, .14);
+      --nav-glass: rgba(8, 60, 90, .85);
+    }
+
+    .navbar {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .00)),
+        var(--nav-glass);
+      border-bottom: 1px solid var(--nav-borde);
+      backdrop-filter: saturate(1.05) blur(6px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, .18);
+      padding-block: .5rem;
+    }
+
+    /* Marca */
+    .navbar-brand img {
+      max-height: 50px;
+      transition: transform .2s ease, filter .2s ease;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .25));
+    }
+
+    .navbar-brand:hover img {
+      transform: translateY(-1px) scale(1.03);
+    }
+
+    /* Links */
+    .navbar-nav .nav-link {
+      position: relative;
+      color: #fff !important;
+      font-weight: 500;
+      letter-spacing: .1px;
+      padding: .6rem 1rem;
+      margin: 0 .15rem;
+      border-radius: 10px;
+      transition: background .2s ease, color .2s ease, transform .15s ease;
+    }
+
+    /* subrayado sutil */
+    .navbar-nav .nav-link::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: .35rem;
+      height: 2px;
+      background: linear-gradient(90deg, var(--nav-verde), var(--nav-celeste));
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform .22s ease;
+      opacity: .9;
+    }
+
+    /* hover limpio */
+    .navbar-nav .nav-link:hover {
+      background: rgba(255, 255, 255, .06);
+      transform: translateY(-1px);
+    }
+
+    .navbar-nav .nav-link:hover::after {
+      transform: scaleX(1);
+    }
+
+    /* activo con énfasis moderado */
+    .navbar-nav .nav-link.active {
+      background: rgba(255, 255, 255, .10);
+      color: #fff !important;
+    }
+
+    .navbar-nav .nav-link.active::after {
+      transform: scaleX(1);
+    }
+
+    /* enfoque accesible */
+    .navbar-nav .nav-link:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(122, 204, 64, .35);
+    }
+
+    /* Bloque derecho */
+    .operado {
+      color: #fff;
+      font-size: 14px;
+      letter-spacing: .2px;
+      opacity: .9;
+    }
+
+    /* Toggler */
+    .navbar-toggler {
+      border: 1px solid rgba(255, 255, 255, .35) !important;
+      border-radius: 10px;
+      padding: .35rem .5rem;
+      transition: background .2s ease, transform .1s ease;
+    }
+
+    .navbar-toggler:hover {
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .navbar-toggler:active {
+      transform: scale(.98);
+    }
+
+    .navbar-toggler-icon {
+      /* icono claro siempre visible */
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E") !important;
+    }
+
+    /* Menú colapsado en móvil: panel con glass suave */
+    @media (max-width: 991.98px) {
+      .navbar-collapse {
+        background: rgba(255, 255, 255, .04);
+        border-radius: 14px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+        padding: .35rem;
+        margin-top: .6rem;
+      }
+
+      .navbar-nav .nav-link {
+        margin: .1rem 0;
+        border-radius: 12px;
+      }
+    }
+
+    /* Respeto por usuarios que prefieren menos movimiento */
+    @media (prefers-reduced-motion: reduce) {
+
+      .navbar,
+      .navbar * {
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ===== LOADER GLOBAL (solo carga inicial) ===== -->
+  <div id="appLoader" class="app-loader" aria-hidden="true">
+    <div class="loader-ring" role="status" aria-label="Cargando">
+      <div class="loader-logo">
+        <img src="imagenes/logo-livespace blanco.png" alt="LiveSpace" />
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand d-flex align-items-center" href="#"><img src="imagenes/logo-livespace blanco.png"
+          alt="Logo LiveSpace" class="d-inline-block" /></a>
+      <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Ubicación</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="zonas.html">Zonas de experiencia</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="apartamentos.html">Apartamentos</a>
+          </li>
+        </ul>
+      </div>
+      <div class="d-flex align-items-center">
+        <span class="operado me-2">Operado por:</span>
+        <img src="imagenes/logo-vivit blanco.png" alt="Logo VIV.IT" height="50" />
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== SECCIÓN PROYECTOS ===== -->
+  <section class="proyectos">
+    <div class="container-fluid px-0">
+      <div class="row g-5 align-items-start">
+        <!-- Columna izquierda -->
+        <div class="col-lg-5 d-flex flex-column align-items-center">
+          <div class="apt-header">
+            <button class="nav-arrow" id="prevBtn" aria-label="Anterior">
+              <i class="bi bi-chevron-double-left"></i>
+            </button>
+            <h2 class="apt-title mb-0" id="aptName">Apt 01</h2>
+            <button class="nav-arrow" id="nextBtn" aria-label="Siguiente">
+              <i class="bi bi-chevron-double-right"></i>
+            </button>
+          </div>
+
+          <!-- Contenedor para planos -->
+          <div class="plan-wrapper">
+            <img id="planImg" class="plan-img" src="imagenes/1_PISO.png" alt="Plano del apartamento" />
+            <div id="hotspotsContainer"></div>
+          </div>
+
+          <!-- Zonas de experiencia -->
+          <div id="experienceZonesContainer" class="experience-zones-wrapper"></div>
+
+          <!-- Specs -->
+          <div class="specs mt-3">
+            <div class="item" style="visibility: hidden;">
+              <img src="imagenes/area.png" alt="area" width="25" />
+              <div>
+                <strong>Área:</strong><span class="val" id="specArea">25 m²</span>
+              </div>
+            </div>
+            <div class="item" style="visibility: hidden;">
+              <img src="imagenes/cama-matrimonial.png" alt="cama" width="25" />
+              <div>
+                <strong>Alcobas:</strong><span class="val" id="specBeds">1</span>
+              </div>
+            </div>
+            <div class="item" style="visibility: hidden;">
+              <img src="imagenes/bano.png" alt="bano" width="25" />
+              <div>
+                <strong>Baños:</strong><span class="val" id="specBaths">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha (visor 360) -->
+        <div class="col-lg-7" style="z-index: 9999;">
+          <div class="pano-card">
+            <div id="panorama"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="watermark">Apartaestudios nuevos en arriendo</div>
+  </section>
+
+  <!-- Dependencias JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+  <script>
+    /* ===== DATOS ===== */
+    const apts = [
+      {
+        name: "Piso 1",
+        area: 25, beds: 1, baths: 1,
+        plan: "imagenes/1_PISO.png",
+        pano: "imagenes/Pisos/P1/F01.jpg",
+        hotspots: [
+          { top: 99, left: 50, panoSrc: "imagenes/Pisos/P1/F09.jpg" }, { top: 69, left: 96, panoSrc: "imagenes/Pisos/P1/F08.jpg" }, { top: 38, left: 140, panoSrc: "imagenes/Pisos/P1/F07.jpg" }, { top: 172, left: 128, panoSrc: "imagenes/Pisos/P1/F10.jpg" }, { top: 133, left: 178, panoSrc: "imagenes/Pisos/P1/F11.jpg" }, { top: 101, left: 219, panoSrc: "imagenes/Pisos/P1/F06.jpg" }, { top: 215, left: 168, panoSrc: "imagenes/Pisos/P1/F14.jpg" }, { top: 192, left: 196, panoSrc: "imagenes/Pisos/P1/F13.jpg" }, { top: 171, left: 226, panoSrc: "imagenes/Pisos/P1/F12.jpg" }, { top: 213, left: 218, panoSrc: "imagenes/Pisos/P1/F18.jpg" }, { top: 254, left: 218, panoSrc: "imagenes/Pisos/P1/F17.jpg" }, { top: 227, left: 249, panoSrc: "imagenes/Pisos/P1/F16.jpg" }, { top: 205, left: 270, panoSrc: "imagenes/Pisos/P1/F15.jpg" }, { top: 171, left: 335, panoSrc: "imagenes/Pisos/P1/F05.jpg" }, { top: 259, left: 277, panoSrc: "imagenes/Pisos/P1/F19.jpg" }, { top: 236, left: 304, panoSrc: "imagenes/Pisos/P1/F20.jpg" }, { top: 257, left: 336, panoSrc: "imagenes/Pisos/P1/F21.jpg" }, { top: 311, left: 367, panoSrc: "imagenes/Pisos/P1/F23.jpg" }, { top: 287, left: 391, panoSrc: "imagenes/Pisos/P1/F22.jpg" }, { top: 334, left: 403, panoSrc: "imagenes/Pisos/P1/F24.jpg" }, { top: 312, left: 424, panoSrc: "imagenes/Pisos/P1/F25.jpg" }, { top: 348, left: 450, panoSrc: "imagenes/Pisos/P1/F02.jpg" }, { top: 380, left: 496, panoSrc: "imagenes/Pisos/P1/F01.jpg" }, { top: 300, left: 496, panoSrc: "imagenes/Pisos/P1/F03.jpg" }, { top: 247, left: 446, panoSrc: "imagenes/Pisos/P1/F04.jpg" },
+        ],
+      },
+      {
+        name: "Piso 2-4-6",
+        pano: "imagenes/Pisos/P2-4-6/GAMECLUB1.jpg",
+        experienceZones: [
+          { name: "Game Club", thumb: "imagenes/GAME_CLUB_1.png", panoSrc: "imagenes/Pisos/P2-4-6/GAMECLUB1.jpg" },
+          { name: "Social Hub", thumb: "imagenes/SOCIAL_HUB_1.png", panoSrc: "imagenes/Pisos/P2-4-6/SOCIALHUB1.jpg" },
+          { name: "Lab Room", thumb: "imagenes/LAB_ROOM_1.png", panoSrc: "imagenes/Pisos/P2-4-6/LABROOM1.jpg" }
+        ]
+      },
+      {
+        name: "Piso 8",
+        area: 25, beds: 1, baths: 1,
+        plan: "imagenes/8_PISO.png",
+        pano: "imagenes/Pisos/P8/F01.jpg",
+        hotspots: [
+          { top: 95, left: 168, panoSrc: "imagenes/Pisos/P8/F01.jpg" }, { top: 142, left: 162, panoSrc: "imagenes/Pisos/P8/F02.jpg" }, { top: 136, left: 193, panoSrc: "imagenes/Pisos/P8/F03.jpg" }, { top: 158, left: 222, panoSrc: "imagenes/Pisos/P8/F04.jpg" }, { top: 170, left: 263, panoSrc: "imagenes/Pisos/P8/F05.jpg" }, { top: 188, left: 290, panoSrc: "imagenes/Pisos/P8/F06.jpg" }, { top: 209, left: 311, panoSrc: "imagenes/Pisos/P8/F07.jpg" }, { top: 231, left: 339, panoSrc: "imagenes/Pisos/P8/F09.jpg" }, { top: 190, left: 331, panoSrc: "imagenes/Pisos/P8/F08.jpg" }, { top: 262, left: 403, panoSrc: "imagenes/Pisos/P8/F10.jpg" }, { top: 298, left: 426, panoSrc: "imagenes/Pisos/P8/F13.jpg" }, { top: 307, left: 479, panoSrc: "imagenes/Pisos/P8/F14.jpg" }, { top: 341, left: 457, panoSrc: "imagenes/Pisos/P8/F18.jpg" }, { top: 377, left: 433, panoSrc: "imagenes/Pisos/P8/F17.jpg" }, { top: 346, left: 498, panoSrc: "imagenes/Pisos/P8/F15.jpg" }, { top: 418, left: 448, panoSrc: "imagenes/Pisos/P8/F16.jpg" }, { top: 311, left: 331, panoSrc: "imagenes/Pisos/P8/F12.jpg" }, { top: 287, left: 302, panoSrc: "imagenes/Pisos/P8/F11.jpg" },
+        ],
+      },
+    ];
+
+    /* ===== Constantes & refs ===== */
+    const ORIGINAL_PLAN_WIDTH = 600;
+    const HFOV_DEFAULT = 110, HFOV_MIN = 65, HFOV_MAX = 125;
+
+    let current = 0;
+    let viewer = null;
+
+    const nameEl = document.getElementById("aptName");
+    const planWrapper = document.querySelector(".plan-wrapper");
+    const planImg = document.getElementById("planImg");
+    const hotspotsContainer = document.getElementById("hotspotsContainer");
+    const specsContainer = document.querySelector(".specs");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const experienceZonesContainer = document.getElementById("experienceZonesContainer");
+    const panoramaBox = document.getElementById("panorama");
+
+    /* ===== Loader global: flags de alistamiento ===== */
+    const appLoader = document.getElementById('appLoader');
+    const READY = { assets: false, scene: false, plan: false };
+    let firstSceneLoaded = false;
+    let firstPlanReady = false;
+    const checkAllReady = () => {
+      if (READY.assets && READY.scene && READY.plan) {
+        appLoader.classList.add('is-hide'); // ocultar loader global (solo una vez)
+      }
+    };
+
+    /* ===== Caché de recursos y escenas ===== */
+    const RESOURCE_CACHE = new Map();     // url -> { blobUrl }
+    const SCENE_ID_BY_URL = new Map();    // pano url -> sceneId
+
+    function getAllPanoUrls() {
+      const urls = new Set();
+      for (const ap of apts) {
+        if (ap.pano) urls.add(ap.pano);
+        if (ap.hotspots) for (const s of ap.hotspots) if (s.panoSrc) urls.add(s.panoSrc);
+        if (ap.experienceZones) for (const z of ap.experienceZones) if (z.panoSrc) urls.add(z.panoSrc);
+      }
+      return Array.from(urls);
+    }
+
+    function getAllAssetUrls() {
+      const urls = new Set(getAllPanoUrls());
+      for (const ap of apts) {
+        if (ap.plan) urls.add(ap.plan);
+        if (ap.experienceZones) for (const z of ap.experienceZones) if (z.thumb) urls.add(z.thumb);
+      }
+      return Array.from(urls);
+    }
+
+    async function preloadAndDecode(url) {
+      if (RESOURCE_CACHE.has(url)) return RESOURCE_CACHE.get(url).blobUrl;
+      const res = await fetch(url, { cache: "force-cache" });
+      if (!res.ok) throw new Error(`No se pudo precargar: ${url}`);
+      const blob = await res.blob();
+      const objectUrl = URL.createObjectURL(blob);
+
+      // Decodifica para que quede caliente en memoria
+      try {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = objectUrl;
+        await img.decode();
+      } catch (_) { }
+
+      RESOURCE_CACHE.set(url, { blobUrl: objectUrl });
+      return objectUrl;
+    }
+
+    async function preloadAllAssets() {
+      const urls = getAllAssetUrls();
+      await Promise.all(urls.map(preloadAndDecode));
+    }
+
+    function blob(url) {
+      return RESOURCE_CACHE.get(url)?.blobUrl || url;
+    }
+
+    function buildScenes() {
+      const scenes = {};
+      SCENE_ID_BY_URL.clear();
+      let i = 0;
+      for (const url of getAllPanoUrls()) {
+        const id = `scene_${i++}`;
+        SCENE_ID_BY_URL.set(url, id);
+        scenes[id] = {
+          type: "equirectangular",
+          panorama: blob(url),
+          hotSpots: [] // no usamos hotspots 3D aquí
+        };
+      }
+      return scenes;
+    }
+
+    function firstPanoFor(ap) {
+      if (ap.pano) return ap.pano;
+      if (ap.experienceZones?.length) return ap.experienceZones[0].panoSrc;
+      if (ap.hotspots?.length) return ap.hotspots[0].panoSrc;
+      return getAllPanoUrls()[0];
+    }
+
+    function createSingleViewer(scenes) {
+      if (viewer) return viewer;
+      const firstUrl = firstPanoFor(apts[0]);
+      const firstScene = SCENE_ID_BY_URL.get(firstUrl);
+
+      viewer = pannellum.viewer("panorama", {
+        default: {
+          firstScene: firstScene,
+          autoLoad: true,
+          sceneFadeDuration: 300,
+          hfov: HFOV_DEFAULT,
+          minHfov: HFOV_MIN,
+          maxHfov: HFOV_MAX,
+          showZoomCtrl: false,
+          compass: false,
+          autoRotate: -12
+        },
+        scenes
+      });
+
+      // Primer 'load' que dispare el visor marca READY.scene
+      viewer.on('load', () => {
+        if (!firstSceneLoaded) {
+          firstSceneLoaded = true;
+          READY.scene = true;
+          checkAllReady();
+        }
+      });
+
+      return viewer;
+    }
+
+    function changePanorama(panoUrl) {
+      const sceneId = SCENE_ID_BY_URL.get(panoUrl);
+      if (!viewer || !sceneId) return;
+
+      // Blur suave durante el cambio
+      panoramaBox.classList.add('is-blur');
+
+      const onLoad = () => {
+        panoramaBox.classList.remove('is-blur');
+        viewer.off && viewer.off('load', onLoad);
+      };
+      viewer.on && viewer.on('load', onLoad);
+
+      viewer.loadScene(sceneId, null, null, HFOV_DEFAULT, 320);
+
+      // Fallback (por si el evento no dispara)
+      setTimeout(() => panoramaBox.classList.remove('is-blur'), 800);
+    }
+
+    /* ===== Plano responsive ===== */
+    function renderPlanHotspots() {
+      const ap = apts[current];
+      hotspotsContainer.innerHTML = "";
+      if (!ap.plan || !planImg.offsetWidth) return;
+
+      const currentPlanWidth = planImg.offsetWidth;
+      const scaleFactor = currentPlanWidth / ORIGINAL_PLAN_WIDTH;
+
+      (ap.hotspots || []).forEach((spot) => {
+        const el = document.createElement("span");
+        el.className = "hotspot";
+        el.textContent = "360";
+
+        el.style.top = (spot.top * scaleFactor) + "px";
+        el.style.left = (spot.left * scaleFactor) + "px";
+
+        const size = 28 * Math.max(scaleFactor, 0.8);
+        el.style.width = size + "px";
+        el.style.height = size + "px";
+        el.style.fontSize = (12 * Math.max(scaleFactor, 0.85)) + "px";
+
+        el.addEventListener("click", () => changePanorama(spot.panoSrc));
+        hotspotsContainer.appendChild(el);
+      });
+    }
+
+    /* ===== Actualiza UI según el item ===== */
+    function updateApartment(index) {
+      current = index;
+      const ap = apts[current];
+
+      nameEl.textContent = ap.name;
+
+      if (ap.experienceZones) {
+        // ZONAS DE EXPERIENCIA
+        planWrapper.style.display = 'none';
+        specsContainer.style.visibility = 'hidden';
+        experienceZonesContainer.style.display = 'flex';
+        experienceZonesContainer.innerHTML = '';
+
+        ap.experienceZones.forEach(zone => {
+          const zoneEl = document.createElement('div');
+          zoneEl.className = 'experience-zone-item';
+
+          const img = document.createElement('img');
+          img.alt = zone.name;
+          img.src = blob(zone.thumb);
+
+          const span = document.createElement('span');
+          span.className = 'name';
+          span.textContent = zone.name;
+
+          zoneEl.appendChild(img);
+          zoneEl.appendChild(span);
+          zoneEl.addEventListener('click', () => changePanorama(zone.panoSrc));
+          experienceZonesContainer.appendChild(zoneEl);
+        });
+
+        changePanorama(firstPanoFor(ap));
+
+        // En caso de que el primer item fuese "zonas", marcamos plan listo
+        if (!firstPlanReady) {
+          firstPlanReady = true;
+          READY.plan = true;
+          checkAllReady();
+        }
+
+      } else {
+        // PLANO + HOTSPOTS
+        planWrapper.style.display = 'block';
+        specsContainer.style.visibility = 'visible';
+        experienceZonesContainer.style.display = 'none';
+
+        // actualiza specs si existen (están ocultas en este layout)
+        const areaEl = document.getElementById("specArea");
+        const bedsEl = document.getElementById("specBeds");
+        const bathsEl = document.getElementById("specBaths");
+        if (areaEl && ap.area != null) areaEl.textContent = ap.area + " m²";
+        if (bedsEl && ap.beds != null) bedsEl.textContent = ap.beds;
+        if (bathsEl && ap.baths != null) bathsEl.textContent = ap.baths;
+
+        // plano desde blob ya cargado
+        planImg.onload = () => {
+          renderPlanHotspots();
+          if (!firstPlanReady) {
+            firstPlanReady = true;
+            READY.plan = true;
+            checkAllReady();
+          }
+        };
+        planImg.src = blob(ap.plan);
+
+        if (planImg.complete) {
+          renderPlanHotspots();
+          if (!firstPlanReady) {
+            firstPlanReady = true;
+            READY.plan = true;
+            checkAllReady();
+          }
+        }
+
+        changePanorama(firstPanoFor(ap));
+      }
+    }
+
+    /* ===== Init ===== */
+    document.addEventListener("DOMContentLoaded", async () => {
+      // 1) Precarga todo (panos, planos y thumbs)
+      await preloadAllAssets();
+      READY.assets = true;
+      checkAllReady();
+
+      // 2) Construye escenas con blobs y crea UN único viewer
+      const scenes = buildScenes();
+      createSingleViewer(scenes);
+
+      // 3) Listeners de UI
+      prevBtn.addEventListener("click", () => {
+        current = (current - 1 + apts.length) % apts.length;
+        updateApartment(current);
+      });
+      nextBtn.addEventListener("click", () => {
+        current = (current + 1) % apts.length;
+        updateApartment(current);
+      });
+      window.addEventListener("resize", renderPlanHotspots);
+
+      // 4) Primera carga
+      updateApartment(current);
+
+      // 5) Limpieza blobs al salir (opcional)
+      window.addEventListener("beforeunload", () => {
+        for (const v of RESOURCE_CACHE.values()) {
+          if (v?.blobUrl) URL.revokeObjectURL(v.blobUrl);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
